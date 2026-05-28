@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentores — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body class="page-with-nav " id="app">
+
+  <!-- Top Nav -->
+  <nav class="top-nav" role="navigation" aria-label="Navegação principal">
+    <a href="dashboard.html" class="nav-brand" aria-label="Vocare início">
+      <img src="../assets/logo.png" alt="Vocare" class="nav-logo">
+    </a>
+        <nav class="nav-menu-desktop" aria-label="Menu principal">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm">🏠 Início</a>
+      <a href="professions.html" class="btn btn-ghost btn-sm">🔍 Explorar</a>
+      <a href="mentors.html" class="btn btn-ghost btn-sm" style="font-weight:600;color:var(--color-primary)">👤 Mentores</a>
+      <a href="voca.html" class="btn btn-ghost btn-sm">💬 Chat IA</a>
+      <a href="career-plan.html" class="btn btn-ghost btn-sm">📋 Plano</a>
+      <a href="test.html" class="btn btn-ghost btn-sm">🎯 Refazer Teste</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="dropdown">
+        <div class="nav-avatar" id="navAvatar" role="button" tabindex="0" aria-label="Menu do usuário">?</div>
+        <div id="navDropdown" class="dropdown-menu hidden" role="menu">
+          <div style="padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--color-divider)">
+            <div id="dropdownName" style="font-weight:600;font-size:var(--text-sm)"></div>
+            <div id="dropdownEmail" style="font-size:var(--text-xs);color:var(--color-muted)"></div>
+          </div>
+          <button id="logoutBtn" class="dropdown-item danger" role="menuitem">🚪 Sair</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-content" aria-live="polite">
+    <!-- Page Title -->
+    <div class="section-header mb-4">
+      <h1 style="font-size:var(--text-xl)">👤 Mentores</h1>
+    </div>
+
+    <!-- Free sessions info -->
+    <div id="sessionsInfo" class="alert alert-info mb-4" role="status">
+      <span class="alert-icon">ℹ️</span>
+      <span id="sessionsInfoText">Carregando...</span>
+    </div>
+
+    <!-- Area filters -->
+    <div class="filter-chips mb-4" role="group" aria-label="Filtrar por área" id="areaFilters">
+      <button class="chip active" data-area="" aria-pressed="true">Todos</button>
+      <!-- dynamically filled -->
+    </div>
+
+    <!-- Availability filter -->
+    <div class="flex items-center gap-3 mb-4">
+      <label class="form-check" style="cursor:pointer">
+        <input type="checkbox" id="availableOnly" class="form-check-input">
+        <span class="form-check-label">Apenas disponíveis agora</span>
+      </label>
+    </div>
+
+    <!-- Mentors grid -->
+    <div id="mentorsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-4)" role="list" aria-label="Lista de mentores">
+      <!-- skeleton loaders -->
+      <div class="card" style="padding:var(--space-4)">
+        <div class="flex items-center gap-3">
+          <div class="skeleton skeleton-avatar" style="width:56px;height:56px;flex-shrink:0"></div>
+          <div class="flex-1"><div class="skeleton skeleton-text" style="width:60%;margin-bottom:8px"></div><div class="skeleton skeleton-text" style="width:40%"></div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:var(--space-4)">
+        <div class="flex items-center gap-3">
+          <div class="skeleton skeleton-avatar" style="width:56px;height:56px;flex-shrink:0"></div>
+          <div class="flex-1"><div class="skeleton skeleton-text" style="width:70%;margin-bottom:8px"></div><div class="skeleton skeleton-text" style="width:45%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="mentorsEmpty" class="empty-state hidden">
+      <div class="empty-state-icon">👤</div>
+      <h3>Nenhum mentor encontrado</h3>
+      <p>Tente ajustar os filtros ou verifique novamente mais tarde.</p>
+    </div>
+  </main>
+
+  <!-- Mentor Detail Modal -->
+  <div id="mentorModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="mentorModalTitle">
+    <div class="modal">
+      <div class="modal-handle" aria-hidden="true"></div>
+      <div id="mentorModalContent">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ai.js"></script>
+  <script src="../js/mentors.js"></script>
+</body>
+</html>

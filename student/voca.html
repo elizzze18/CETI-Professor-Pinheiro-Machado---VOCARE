@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Chat IA — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+  <style>
+    .voca-page {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: var(--color-bg);
+    }
+
+    /* Push chat body below top-nav */
+    .voca-chat-wrap {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding-top: var(--nav-height);
+      padding-bottom: 72px; /* room for input bar */
+      overflow: hidden;
+    }
+
+    .voca-chat-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-card);
+      border-bottom: 1px solid var(--color-border-light);
+      flex-shrink: 0;
+    }
+
+    .voca-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .voca-info h2 {
+      font-size: var(--text-base);
+      font-weight: var(--fw-semi);
+      color: var(--color-text);
+      margin: 0 0 2px;
+    }
+
+    .voca-info p {
+      font-size: var(--text-xs);
+      color: var(--color-success);
+      margin: 0;
+    }
+
+    /* Messages */
+    .voca-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      scroll-behavior: smooth;
+    }
+
+    .voca-msg {
+      display: flex;
+      gap: var(--space-2);
+      max-width: 85%;
+      animation: fadeInUp 200ms var(--ease) both;
+    }
+
+    .voca-msg.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .voca-msg.bot {
+      align-self: flex-start;
+    }
+
+    .voca-msg-bubble {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-xl);
+      font-size: var(--text-sm);
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .voca-msg.user .voca-msg-bubble {
+      background: var(--color-primary);
+      color: #fff;
+      border-bottom-right-radius: var(--radius-sm);
+    }
+
+    .voca-msg.bot .voca-msg-bubble {
+      background: var(--color-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border-light);
+      border-bottom-left-radius: var(--radius-sm);
+    }
+
+    .voca-msg-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      align-self: flex-end;
+    }
+
+    /* Action bubble (system messages from executed actions) */
+    .voca-action-bubble {
+      background: linear-gradient(135deg, #EEF4FF, #F4F8FD) !important;
+      border-color: var(--color-secondary) !important;
+      border-left: 3px solid var(--color-primary) !important;
+    }
+
+    .voca-action-bubble a {
+      color: var(--color-primary);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    /* Typing indicator */
+    .voca-typing {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-card);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-xl);
+      border-bottom-left-radius: var(--radius-sm);
+      width: fit-content;
+    }
+
+    .voca-typing span {
+      width: 7px;
+      height: 7px;
+      background: var(--color-muted);
+      border-radius: 50%;
+      animation: typingDot 1.2s infinite;
+    }
+    .voca-typing span:nth-child(2) { animation-delay: .2s; }
+    .voca-typing span:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes typingDot {
+      0%, 60%, 100% { transform: translateY(0); opacity: .6; }
+      30%            { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* Input area */
+    .voca-input-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-card);
+      border-top: 1px solid var(--color-border-light);
+      display: flex;
+      gap: var(--space-2);
+      align-items: flex-end;
+      z-index: var(--z-sticky);
+    }
+
+    .voca-textarea {
+      flex: 1;
+      padding: var(--space-2) var(--space-3);
+      border: 1.5px solid var(--color-border-light);
+      border-radius: var(--radius-xl);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      background: var(--color-bg);
+      resize: none;
+      max-height: 120px;
+      line-height: 1.5;
+      transition: border-color 150ms;
+      outline: none;
+    }
+
+    .voca-textarea:focus {
+      border-color: var(--color-primary);
+    }
+
+    .voca-send-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background: var(--color-primary);
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 150ms, transform 100ms;
+      flex-shrink: 0;
+    }
+
+    .voca-send-btn:disabled {
+      background: var(--color-border-light);
+      cursor: not-allowed;
+    }
+
+    .voca-send-btn:not(:disabled):active {
+      transform: scale(0.93);
+    }
+
+    /* Quick prompts */
+    .voca-quick-prompts {
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      padding: 0 var(--space-4) var(--space-2);
+      scrollbar-width: none;
+    }
+
+    .voca-quick-prompts::-webkit-scrollbar { display: none; }
+
+    .voca-quick-chip {
+      white-space: nowrap;
+      padding: 6px 12px;
+      background: var(--color-bg);
+      border: 1.5px solid var(--color-border-light);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      color: var(--color-text-soft);
+      cursor: pointer;
+      transition: border-color 150ms, color 150ms;
+      flex-shrink: 0;
+    }
+
+    .voca-quick-chip:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    /* Welcome state */
+    .voca-welcome {
+      text-align: center;
+      padding: var(--space-8) var(--space-4);
+      max-width: 360px;
+      margin: auto;
+    }
+
+    .voca-welcome-icon {
+      font-size: 3rem;
+      margin-bottom: var(--space-4);
+    }
+
+    .voca-welcome h3 {
+      font-size: var(--text-xl);
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+    }
+
+    .voca-welcome p {
+      font-size: var(--text-sm);
+      color: var(--color-muted);
+      line-height: 1.6;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="">
+
+  <!-- Top Nav -->
+  <nav class="top-nav" role="navigation" aria-label="Navegação principal">
+    <a href="dashboard.html" class="nav-brand" aria-label="Vocare início">
+      <img src="../assets/logo.png" alt="Vocare" class="nav-logo">
+    </a>
+    <nav class="nav-menu-desktop" aria-label="Menu principal">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm">🏠 Início</a>
+      <a href="professions.html" class="btn btn-ghost btn-sm">🔍 Explorar</a>
+      <a href="mentors.html" class="btn btn-ghost btn-sm">👤 Mentores</a>
+      <a href="voca.html" class="btn btn-ghost btn-sm" style="font-weight:600;color:var(--color-primary)">💬 Chat IA</a>
+      <a href="career-plan.html" class="btn btn-ghost btn-sm">📋 Plano</a>
+      <a href="test.html" class="btn btn-ghost btn-sm">🎯 Refazer Teste</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="dropdown" style="position:relative">
+        <div id="navAvatar" class="nav-avatar" role="button" tabindex="0" aria-label="Menu do usuário" aria-haspopup="true" aria-expanded="false"></div>
+        <div id="navDropdown" class="nav-dropdown hidden" role="menu">
+          <div style="padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--color-divider)">
+            <p id="dropdownName" style="font-weight:var(--fw-semi);font-size:var(--text-sm);color:var(--color-text)"></p>
+            <p id="dropdownEmail" style="font-size:var(--text-xs);color:var(--color-muted)"></p>
+          </div>
+          <button class="dropdown-item" onclick="navigate('../student/career-plan.html')">
+            📋 Meu plano de carreira
+          </button>
+          <div class="dropdown-divider"></div>
+          <button id="logoutBtn" class="dropdown-item danger">
+            🚪 Sair
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="voca-page">
+    <div class="voca-chat-wrap">
+      <!-- Voca header -->
+      <div class="voca-chat-header">
+        <div class="voca-avatar" aria-hidden="true">🤖</div>
+        <div class="voca-info">
+          <h2>Voca</h2>
+          <p>● Online agora</p>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="voca-messages" id="vocaMessages" role="log" aria-live="polite" aria-label="Conversa com Voca">
+        <!-- Welcome shown until first message -->
+        <div class="voca-welcome" id="vocaWelcome">
+          <div class="voca-welcome-icon">💬</div>
+          <h3>Olá! Sou a Voca</h3>
+          <p>Sua assistente de orientação profissional. Pode me perguntar sobre carreiras, profissões, como se preparar para o mercado de trabalho e muito mais!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input bar (fixed above bottom-nav) -->
+    <div class="voca-input-bar" id="vocaInputBar">
+      <div style="width:100%">
+        <!-- Quick prompts (shown only before first message) -->
+        <div class="voca-quick-prompts" id="vocaQuickPrompts">
+          <button class="voca-quick-chip" data-prompt="Mude meu plano de carreira para Engenheiro de Software">🔄 Mudar plano</button>
+          <button class="voca-quick-chip" data-prompt="Me leva para o meu plano de carreira">📋 Ver meu plano</button>
+          <button class="voca-quick-chip" data-prompt="Quais carreiras combinam com quem gosta de tecnologia?">💻 Carreiras em TI</button>
+          <button class="voca-quick-chip" data-prompt="Como conseguir meu primeiro estágio?">💼 Primeiro estágio</button>
+          <button class="voca-quick-chip" data-prompt="Quais cursos técnicos têm no Piauí?">🎓 Cursos técnicos PI</button>
+        </div>
+        <div style="display:flex;gap:var(--space-2);align-items:flex-end">
+          <textarea
+            id="vocaInput"
+            class="voca-textarea"
+            placeholder="Pergunte à Voca..."
+            rows="1"
+            maxlength="2000"
+            aria-label="Mensagem para a Voca"
+          ></textarea>
+          <button id="vocaSendBtn" class="voca-send-btn" aria-label="Enviar mensagem" disabled>➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ai.js"></script>
+  <script src="../js/voca.js"></script>
+</body>
+</html>

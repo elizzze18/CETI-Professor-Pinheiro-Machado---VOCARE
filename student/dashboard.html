@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+  <style>
+    /* ── Dashboard-specific styles ── */
+    .dashboard-header {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      padding: calc(var(--nav-height) + var(--space-6)) var(--space-4) var(--space-8);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .dashboard-header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(240,165,0,0.12);
+      pointer-events: none;
+    }
+    .dashboard-header::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      pointer-events: none;
+    }
+    .dashboard-header-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+    .dashboard-greeting h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: #fff;
+      margin-bottom: var(--space-1);
+    }
+    .dashboard-greeting p {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.75);
+      margin: 0;
+    }
+    .dashboard-avatar-wrap {
+      flex-shrink: 0;
+    }
+    .dashboard-user-avatar {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.25);
+      border: 2.5px solid rgba(255,255,255,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-lg);
+      font-weight: var(--fw-bold);
+      color: #fff;
+      overflow: hidden;
+    }
+    .dashboard-user-avatar img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    /* sections */
+    .dashboard-sections {
+      padding: var(--space-4);
+    }
+    .dashboard-section {
+      margin-bottom: var(--space-6);
+    }
+    /* profession card horizontal scroll */
+    .profession-scroll-card {
+      width: 180px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: var(--color-card);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-border-light);
+      transition: transform var(--duration-base) var(--ease), box-shadow var(--duration-base) var(--ease);
+    }
+    .profession-scroll-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .profession-scroll-card .card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: rgba(255,255,255,0.8);
+      flex-shrink: 0;
+    }
+    .profession-scroll-card .card-info {
+      padding: var(--space-3);
+    }
+    .profession-scroll-card .card-name {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semi);
+      color: var(--color-text);
+      margin-bottom: var(--space-1);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .profession-scroll-card .card-area {
+      font-size: var(--text-xs);
+      color: var(--color-muted);
+      margin-bottom: var(--space-2);
+    }
+    /* vlog card */
+    .vlog-card {
+      width: 220px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: var(--color-card);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-border-light);
+      transition: transform var(--duration-base) var(--ease), box-shadow var(--duration-base) var(--ease);
+    }
+    .vlog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .vlog-thumb-wrap {
+      position: relative;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    }
+    .vlog-thumb-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .vlog-thumb-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+    .vlog-play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.25);
+    }
+    .vlog-play-btn {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      color: var(--color-primary);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .vlog-info { padding: var(--space-3); }
+    .vlog-title {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semi);
+      color: var(--color-text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: var(--space-1);
+    }
+    .vlog-area { font-size: var(--text-xs); color: var(--color-muted); }
+    /* mentor card */
+    .mentor-scroll-card {
+      width: 160px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: var(--color-card);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-border-light);
+      padding: var(--space-4) var(--space-3);
+      text-align: center;
+      transition: transform var(--duration-base) var(--ease), box-shadow var(--duration-base) var(--ease);
+    }
+    .mentor-scroll-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .mentor-scroll-avatar {
+      width: 60px; height: 60px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-lg);
+      font-weight: var(--fw-bold);
+      color: #fff;
+      margin: 0 auto var(--space-2);
+      overflow: hidden;
+      border: 2px solid var(--color-border-light);
+    }
+    .mentor-scroll-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .mentor-scroll-name {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semi);
+      color: var(--color-text);
+      margin-bottom: 2px;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mentor-scroll-profession {
+      font-size: var(--text-xs);
+      color: var(--color-muted);
+      margin-bottom: var(--space-2);
+    }
+    /* career plan card */
+    .career-plan-card {
+      background: linear-gradient(135deg, #EEF4FF, #F4F8FD);
+      border: 1.5px solid var(--color-border-light);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4);
+    }
+    .career-plan-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .career-plan-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-lg);
+      background: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    /* job card */
+    .job-card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-xl);
+      padding: var(--space-4);
+      margin-bottom: var(--space-3);
+      cursor: pointer;
+      transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
+    }
+    .job-card:hover { border-color: var(--color-secondary); box-shadow: var(--shadow-sm); }
+    .job-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+    .job-company-logo {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.125rem;
+      color: #fff;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .job-company-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md); }
+    /* nav dropdown */
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 200px;
+      background: var(--color-card);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      z-index: var(--z-dropdown);
+      overflow: hidden;
+      animation: fadeInScale 150ms var(--ease) both;
+    }
+  </style>
+</head>
+<body class="">
+
+  <!-- ── Top Nav ── -->
+  <nav class="top-nav" role="navigation" aria-label="Navegação principal">
+    <a href="dashboard.html" class="nav-brand" aria-label="Vocare início">
+      <img src="../assets/logo.png" alt="Vocare" class="nav-logo">
+    </a>
+        <nav class="nav-menu-desktop" aria-label="Menu principal">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm" style="font-weight:600;color:var(--color-primary)">🏠 Início</a>
+      <a href="professions.html" class="btn btn-ghost btn-sm">🔍 Explorar</a>
+      <a href="mentors.html" class="btn btn-ghost btn-sm">👤 Mentores</a>
+      <a href="voca.html" class="btn btn-ghost btn-sm">💬 Chat IA</a>
+      <a href="career-plan.html" class="btn btn-ghost btn-sm">📋 Plano</a>
+      <a href="test.html" class="btn btn-ghost btn-sm">🎯 Refazer Teste</a>
+    </nav>
+    <div class="nav-actions">
+      <button id="notifBtn" class="btn btn-ghost btn-icon" aria-label="Notificações" style="position:relative">
+        🔔
+        <span id="notifBadge" class="hidden" style="position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--color-accent);border-radius:50%"></span>
+      </button>
+      <div class="dropdown" style="position:relative">
+        <div id="navAvatar" class="nav-avatar" role="button" tabindex="0" aria-label="Menu do usuário" aria-haspopup="true" aria-expanded="false"></div>
+        <div id="navDropdown" class="nav-dropdown hidden" role="menu">
+          <div style="padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--color-divider)">
+            <p id="dropdownName" style="font-weight:var(--fw-semi);font-size:var(--text-sm);color:var(--color-text)"></p>
+            <p id="dropdownEmail" style="font-size:var(--text-xs);color:var(--color-muted)"></p>
+          </div>
+          <button class="dropdown-item" onclick="navigate('../student/career-plan.html')">
+            📋 Meu plano de carreira
+          </button>
+          <div class="dropdown-divider"></div>
+          <button id="logoutBtn" class="dropdown-item danger">
+            🚪 Sair
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Dashboard Header ── -->
+  <header class="dashboard-header" id="dashHeader">
+    <div class="dashboard-header-content">
+      <div class="dashboard-greeting">
+        <h1 id="greetingText">Olá! 👋</h1>
+        <p id="greetingSubtitle">Bem-vindo ao Vocare</p>
+      </div>
+      <div class="dashboard-avatar-wrap">
+        <div class="dashboard-user-avatar" id="headerAvatar"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main Content ── -->
+  <main class="dashboard-sections animate-fade-in">
+
+    <!-- ── Para Você ── -->
+    <section class="dashboard-section" aria-labelledby="secRecommended">
+      <div class="section-header">
+        <h2 id="secRecommended">🎯 Para você</h2>
+        <div style="display:flex;align-items:center;gap:var(--space-3)">
+          <a href="test.html" id="retakeTestLink" style="font-size:var(--text-xs);color:var(--color-muted);font-weight:var(--fw-medium);display:none">🔄 Refazer teste</a>
+          <a href="professions.html" style="font-size:var(--text-sm);color:var(--color-secondary);font-weight:var(--fw-medium)">Ver tudo</a>
+        </div>
+      </div>
+      <div id="recommendedScroll" class="scroll-x" aria-label="Profissões recomendadas">
+        <!-- Skeleton -->
+        <div class="profession-scroll-card skeleton" style="height:220px"></div>
+        <div class="profession-scroll-card skeleton" style="height:220px"></div>
+        <div class="profession-scroll-card skeleton" style="height:220px"></div>
+      </div>
+    </section>
+
+    <!-- ── Vlogs Recomendados ── -->
+    <section class="dashboard-section" aria-labelledby="secVlogs">
+      <div class="section-header">
+        <h2 id="secVlogs">🎬 Vlogs recomendados</h2>
+        <a href="professions.html" style="font-size:var(--text-sm);color:var(--color-secondary);font-weight:var(--fw-medium)">Explorar</a>
+      </div>
+      <div id="vlogsScroll" class="scroll-x" aria-label="Vlogs recomendados">
+        <div class="vlog-card skeleton" style="height:190px"></div>
+        <div class="vlog-card skeleton" style="height:190px"></div>
+      </div>
+    </section>
+
+    <!-- ── Mentores Disponíveis ── -->
+    <section class="dashboard-section" aria-labelledby="secMentors">
+      <div class="section-header">
+        <h2 id="secMentors">👤 Mentores disponíveis</h2>
+        <a href="mentors.html" style="font-size:var(--text-sm);color:var(--color-secondary);font-weight:var(--fw-medium)">Ver todos</a>
+      </div>
+      <div id="mentorsScroll" class="scroll-x" aria-label="Mentores disponíveis">
+        <div class="mentor-scroll-card skeleton" style="height:180px"></div>
+        <div class="mentor-scroll-card skeleton" style="height:180px"></div>
+        <div class="mentor-scroll-card skeleton" style="height:180px"></div>
+      </div>
+    </section>
+
+    <!-- ── Plano de Carreira ── -->
+    <section class="dashboard-section" aria-labelledby="secCareerPlan">
+      <div class="section-header">
+        <h2 id="secCareerPlan">📋 Meu plano de carreira</h2>
+      </div>
+      <div id="careerPlanArea">
+        <div class="skeleton" style="height:120px;border-radius:var(--radius-xl)"></div>
+      </div>
+    </section>
+
+    <!-- ── Vagas ── -->
+    <section class="dashboard-section" aria-labelledby="secJobs">
+      <div class="section-header">
+        <h2 id="secJobs">💼 Vagas para você</h2>
+      </div>
+      <div id="jobsArea">
+        <div class="skeleton" style="height:90px;border-radius:var(--radius-xl);margin-bottom:var(--space-3)"></div>
+        <div class="skeleton" style="height:90px;border-radius:var(--radius-xl)"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Bottom Navigation ── -->
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>

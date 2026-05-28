@@ -1,0 +1,329 @@
+﻿/* ============================================================
+   VOCARE â€” Mobile-First Responsive
+   mobile.css Â· Breakpoints, adaptaÃ§Ãµes, PWA-ready
+   ============================================================ */
+
+/* â”€â”€ Base (320px+) â€” Mobile First â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+
+/* Prevent horizontal overflow */
+html, body { overflow-x: hidden; }
+
+/* Touch targets */
+button, a, [role="button"], .btn, .chip, .answer-option,
+.bottom-nav-item, .checklist-item, .tab-item {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling on iOS */
+.chat-body, .scroll-x, .sidebar {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Input zoom fix for iOS (font-size >= 16px prevents auto-zoom) */
+input, select, textarea {
+  font-size: max(16px, 1rem) !important;
+}
+
+/* Remove iOS input styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+textarea,
+select {
+  -webkit-appearance: none;
+  border-radius: var(--radius-lg);
+}
+
+/* â”€â”€ Auth Pages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.auth-card {
+  padding: var(--space-6) var(--space-5);
+}
+
+/* â”€â”€ Top Nav â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.top-nav {
+  padding: 0 var(--space-3);
+}
+
+.nav-menu-desktop { display: none; }
+
+/* Toast position */
+.toast-container {
+  bottom: var(--space-4);
+}
+
+/* â”€â”€ Page Layout Mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.page-content {
+  padding: var(--space-4) var(--space-4) var(--space-4);
+}
+
+/* â”€â”€ Grid overrides for mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+
+/* â”€â”€ Hero section mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.hero-section {
+  padding: var(--space-12) var(--space-4) var(--space-8);
+}
+
+/* â”€â”€ Dashboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.dashboard-header {
+  padding: var(--space-4);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: #fff;
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+  margin-bottom: var(--space-4);
+}
+
+.dashboard-header h2 { color: #fff; font-size: var(--text-xl); }
+.dashboard-header p  { color: rgba(255,255,255,0.8); font-size: var(--text-sm); }
+
+/* â”€â”€ Modal mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.modal {
+  max-height: 85vh;
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+}
+.modal-overlay { padding: 0; align-items: flex-end; }
+.modal-overlay.center { padding: var(--space-4); align-items: center; }
+.modal-overlay.center .modal {
+  border-radius: var(--radius-2xl);
+  max-height: calc(100vh - var(--space-8));
+}
+
+/* Modal drag handle */
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  margin: var(--space-2) auto;
+}
+
+/* â”€â”€ Chat mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.chat-container {
+  height: 100dvh; /* dynamic viewport height */
+}
+
+/* Keyboard avoidance */
+.chat-footer {
+  padding-bottom: max(var(--space-3), env(safe-area-inset-bottom, var(--space-3)));
+}
+
+/* â”€â”€ Vocational Test â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.test-question-text {
+  font-size: var(--text-xl);
+  font-weight: var(--fw-semi);
+  color: var(--color-primary);
+  text-align: center;
+  line-height: 1.4;
+  margin-bottom: var(--space-6);
+}
+
+.test-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* â”€â”€ Cards in scroll â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.profession-card { width: 200px; }
+.mentor-card     { width: 160px; }
+
+/* â”€â”€ Sidebar hidden on mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.sidebar { display: none; }
+.sidebar-layout .main-content { margin-left: 0; }
+
+/* â”€â”€ Text sizing mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+h1 { font-size: var(--text-2xl); }
+h2 { font-size: var(--text-xl); }
+
+/* Ensure minimum readable sizes */
+.text-xs { font-size: var(--text-xs); }
+* { min-font-size: 14px; }
+
+/* â”€â”€ Form mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* â”€â”€ Onboarding chat mobile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.onboarding-header {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.onboarding-ai-info h4 { color: #fff; font-size: var(--text-base); font-weight: var(--fw-semi); }
+.onboarding-ai-info p  { color: rgba(255,255,255,0.75); font-size: var(--text-xs); }
+
+/* â”€â”€ Profile loading animation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.profile-creating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-4);
+  text-align: center;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.profile-creating-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+/* â”€â”€ â”€â”€ â”€â”€ BREAKPOINTS â”€â”€ â”€â”€ â”€â”€ */
+
+/* Small (480px+) */
+@media (min-width: 480px) {
+  .container { padding: 0 var(--space-5); }
+  .auth-card { padding: var(--space-8) var(--space-6); }
+  .modal { max-height: 80vh; }
+  .profession-card { width: 210px; }
+}
+
+/* Medium (640px+) â€” Tablet portrait */
+@media (min-width: 640px) {
+  .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-cols-4 { grid-template-columns: repeat(2, 1fr); }
+
+  .form-row {
+    flex-direction: row;
+    gap: var(--space-4);
+  }
+  .form-row .form-group { flex: 1; }
+
+  .hero-title { font-size: var(--text-3xl); }
+  .hero-subtitle { font-size: var(--text-xl); }
+
+  .test-question-text { font-size: var(--text-2xl); }
+  .answer-option { font-size: var(--text-lg); }
+}
+
+/* Large (768px+) â€” Tablet landscape */
+@media (min-width: 768px) {
+  .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* Keep bottom nav visible on all sizes */
+  .toast-container { bottom: var(--space-6); }
+
+  /* Show sidebar */
+  .has-sidebar .sidebar { display: block; }
+  .has-sidebar .main-content { margin-left: var(--sidebar-width); }
+
+  .page-content { padding: var(--space-6); }
+
+  /* Show desktop nav items */
+  .nav-menu-desktop { display: flex; align-items: center; gap: var(--space-2); }
+  .nav-menu-mobile  { display: none; }
+
+  /* Modal centered on tablet+ */
+  .modal-overlay {
+    align-items: center;
+    padding: var(--space-4);
+  }
+  .modal {
+    border-radius: var(--radius-2xl);
+    max-height: calc(100vh - var(--space-8));
+  }
+  .modal-handle { display: none; }
+}
+
+/* XLarge (1024px+) â€” Desktop */
+@media (min-width: 1024px) {
+  h1 { font-size: var(--text-3xl); }
+
+  .profession-card { width: 220px; }
+  .mentor-card { width: 200px; }
+
+  /* Wider dashboard content */
+  .dashboard-header {
+    border-radius: var(--radius-2xl);
+    margin: var(--space-4) 0;
+    padding: var(--space-6);
+  }
+}
+
+/* 2XLarge (1280px+) â€” Wide desktop */
+@media (min-width: 1280px) {
+  .container { padding: 0 var(--space-6); }
+
+  .feature-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* â”€â”€ Safe Area Support (notch/island) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@supports (padding: max(0px)) {
+  .top-nav {
+    padding-left: max(var(--space-4), env(safe-area-inset-left));
+    padding-right: max(var(--space-4), env(safe-area-inset-right));
+  }
+  .bottom-nav {
+    padding-left: max(var(--space-2), env(safe-area-inset-left));
+    padding-right: max(var(--space-2), env(safe-area-inset-right));
+  }
+}
+
+/* â”€â”€ Dark Mode Prep (optional, future) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (prefers-color-scheme: dark) {
+  /* intentionally empty â€” keep light mode by default for accessibility */
+}
+
+/* â”€â”€ Reduced Motion â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* â”€â”€ Print â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media print {
+  .top-nav, .bottom-nav, .sidebar, .btn, .chat-footer { display: none !important; }
+  .page-with-nav { padding-top: 0; }
+  body { background: white; color: black; }
+  .card { box-shadow: none; border: 1px solid #ccc; }
+}
+
+/* â”€â”€ PWA / Standalone â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (display-mode: standalone) {
+  .top-nav {
+    padding-top: env(safe-area-inset-top, 0);
+    height: calc(var(--nav-height) + env(safe-area-inset-top, 0));
+  }
+  .page-with-nav {
+    padding-top: calc(var(--nav-height) + env(safe-area-inset-top, 0));
+  }
+}
+
+/* â”€â”€ Landscape phone adjustments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .chat-container { height: 100vh; }
+  .modal { max-height: 95vh; }
+  .hero-section { padding: var(--space-8) var(--space-4) var(--space-6); }
+}
+
+/* â”€â”€ High contrast mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (forced-colors: active) {
+  .btn, .chip, .badge, .card {
+    border: 2px solid ButtonText;
+  }
+}
+

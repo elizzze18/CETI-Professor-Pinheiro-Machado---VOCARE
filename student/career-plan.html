@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano de Carreira — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body class="page-with-nav " id="app">
+
+  <!-- Top Nav -->
+  <nav class="top-nav" role="navigation" aria-label="Navegação principal">
+    <a href="dashboard.html" class="nav-brand" aria-label="Vocare início">
+      <img src="../assets/logo.png" alt="Vocare" class="nav-logo">
+    </a>
+        <nav class="nav-menu-desktop" aria-label="Menu principal">
+      <a href="dashboard.html" class="btn btn-ghost btn-sm">🏠 Início</a>
+      <a href="professions.html" class="btn btn-ghost btn-sm">🔍 Explorar</a>
+      <a href="mentors.html" class="btn btn-ghost btn-sm">👤 Mentores</a>
+      <a href="voca.html" class="btn btn-ghost btn-sm">💬 Chat IA</a>
+      <a href="career-plan.html" class="btn btn-ghost btn-sm" style="font-weight:600;color:var(--color-primary)">📋 Plano</a>
+      <a href="test.html" class="btn btn-ghost btn-sm">🎯 Refazer Teste</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="dropdown">
+        <div class="nav-avatar" id="navAvatar" role="button" tabindex="0" aria-label="Menu do usuário" aria-haspopup="true">?</div>
+        <div id="navDropdown" class="dropdown-menu hidden" role="menu">
+          <div style="padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--color-divider)">
+            <div id="dropdownName" style="font-weight:600;font-size:var(--text-sm)"></div>
+            <div id="dropdownEmail" style="font-size:var(--text-xs);color:var(--color-muted)"></div>
+          </div>
+          <button id="logoutBtn" class="dropdown-item danger" role="menuitem">🚪 Sair</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="page-content" id="mainContent" aria-live="polite">
+    <!-- Loading State -->
+    <div id="loadingState" class="page-loader">
+      <div class="spinner spinner-lg" aria-label="Carregando plano de carreira"></div>
+    </div>
+
+    <!-- No plan state -->
+    <div id="noPlanState" class="empty-state hidden">
+      <div class="empty-state-icon">📋</div>
+      <h3>Sem plano de carreira ainda</h3>
+      <p>Complete o teste vocacional para receber seu plano personalizado ou escolha uma profissão.</p>
+      <a href="professions.html" class="btn btn-primary mt-4">🔍 Explorar profissões</a>
+    </div>
+
+    <!-- Plan Content -->
+    <div id="planContent" class="hidden">
+
+      <!-- Header -->
+      <div id="planHeader" class="card mb-6" style="background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));color:#fff;border:none">
+        <div class="card-body">
+          <div class="flex items-center gap-3 mb-4">
+            <div style="font-size:2.5rem" id="planAreaIcon">🎯</div>
+            <div>
+              <p style="color:rgba(255,255,255,0.75);font-size:var(--text-sm)">Profissão-alvo</p>
+              <h2 id="planProfessionName" style="color:#fff;font-size:var(--text-xl)">Carregando...</h2>
+              <span id="planAreaBadge" style="display:inline-block;background:rgba(255,255,255,0.2);padding:2px 10px;border-radius:999px;font-size:var(--text-xs);margin-top:4px"></span>
+            </div>
+          </div>
+          <div id="planCompatBadge"></div>
+
+          <!-- Progress overview -->
+          <div class="mt-4">
+            <div class="flex justify-between" style="color:rgba(255,255,255,0.9);font-size:var(--text-sm);margin-bottom:var(--space-2)">
+              <span>Progresso das metas</span>
+              <span id="planProgressText">0/0</span>
+            </div>
+            <div class="progress" style="background:rgba(255,255,255,0.2)">
+              <div id="planProgressBar" class="progress-bar" style="background:var(--color-accent);width:0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs mb-6" role="tablist">
+        <button class="tab-item active" role="tab" aria-selected="true" data-tab="trilha">📍 Trilha</button>
+        <button class="tab-item" role="tab" aria-selected="false" data-tab="cursos">📚 Cursos</button>
+        <button class="tab-item" role="tab" aria-selected="false" data-tab="habilidades">💡 Habilidades</button>
+        <button class="tab-item" role="tab" aria-selected="false" data-tab="metas">✅ Metas</button>
+      </div>
+
+      <!-- Tab: Trilha de aprendizagem -->
+      <div id="tab-trilha" role="tabpanel">
+        <div class="section-header">
+          <h2>Trilha de aprendizagem</h2>
+        </div>
+        <div class="timeline" id="learningPath" aria-label="Trilha de aprendizagem"></div>
+      </div>
+
+      <!-- Tab: Cursos -->
+      <div id="tab-cursos" role="tabpanel" class="hidden">
+        <div class="section-header">
+          <h2>Cursos recomendados</h2>
+          <span class="badge badge-success" id="freeCoursesCount"></span>
+        </div>
+        <div id="coursesGrid" style="display:flex;flex-direction:column;gap:var(--space-3)"></div>
+      </div>
+
+      <!-- Tab: Habilidades -->
+      <div id="tab-habilidades" role="tabpanel" class="hidden">
+        <div class="section-header">
+          <h2>Habilidades a desenvolver</h2>
+        </div>
+        <p style="font-size:var(--text-sm);color:var(--color-muted);margin-bottom:var(--space-4)">
+          Toque em uma habilidade para marcar seu progresso.
+        </p>
+        <div id="skillsGrid" style="display:flex;flex-wrap:wrap;gap:var(--space-2)"></div>
+      </div>
+
+      <!-- Tab: Metas semanais -->
+      <div id="tab-metas" role="tabpanel" class="hidden">
+        <div class="section-header">
+          <h2>Metas semanais</h2>
+          <span class="badge badge-accent" id="completedGoalsCount"></span>
+        </div>
+        <p style="font-size:var(--text-sm);color:var(--color-muted);margin-bottom:var(--space-4)">
+          Marque as metas conforme as concluir. Progresso salvo automaticamente!
+        </p>
+        <div id="goalsList"></div>
+      </div>
+
+      <!-- Share button -->
+      <div style="margin-top:var(--space-6);padding-top:var(--space-4);border-top:1px solid var(--color-divider)">
+        <button id="shareBtn" class="btn btn-outline btn-block">
+          🔗 Compartilhar meu plano
+        </button>
+      </div>
+
+      <!-- Regenerate button -->
+      <div style="margin-top:var(--space-3)">
+        <button id="regenBtn" class="btn btn-ghost btn-block btn-sm" style="color:var(--color-muted)">
+          🔄 Gerar novo plano
+        </button>
+      </div>
+    </div>
+
+    <!-- Generating State -->
+    <div id="generatingState" class="hidden">
+      <div class="profile-creating">
+        <div class="profile-creating-icon">📋</div>
+        <h3 style="color:var(--color-primary)">Criando seu plano...</h3>
+        <p style="color:var(--color-muted);font-size:var(--text-sm)">A IA está montando um plano personalizado para você!</p>
+        <div class="spinner" style="margin-top:var(--space-4)"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ai.js"></script>
+  <script src="../js/career-plan.js"></script>
+</body>
+</html>

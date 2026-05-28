@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Chat com Mentor — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body style="overflow:hidden">
+
+  <div class="chat-container" id="chatContainer">
+    <!-- Chat Header -->
+    <header class="chat-header" id="chatHeader">
+      <a href="mentors.html" class="btn btn-ghost btn-icon btn-sm" aria-label="Voltar para mentores">←</a>
+      <div class="avatar avatar-md flex-shrink-0" id="mentorAvatar" style="background:var(--color-primary)" aria-hidden="true">?</div>
+      <div class="flex-1 min-w-0">
+        <h2 id="mentorName" style="font-size:var(--text-base);font-weight:600;margin:0">Carregando...</h2>
+        <p id="mentorStatus" class="text-xs text-muted">Conectando...</p>
+      </div>
+      <div class="dropdown">
+        <button id="chatMenuBtn" class="btn btn-ghost btn-icon btn-sm" aria-label="Menu da sessão" aria-haspopup="true">⋮</button>
+        <div id="chatMenu" class="dropdown-menu hidden" role="menu">
+          <button id="endSessionBtn" class="dropdown-item danger" role="menuitem">✕ Encerrar sessão</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chat Body -->
+    <div class="chat-body" id="chatBody" role="log" aria-live="polite" aria-label="Mensagens da conversa">
+      <!-- Loading state -->
+      <div id="chatLoading" style="display:flex;justify-content:center;padding:var(--space-8)">
+        <div class="spinner" aria-label="Carregando mensagens"></div>
+      </div>
+    </div>
+
+    <!-- Chat Footer -->
+    <footer class="chat-footer" id="chatFooter" style="display:none">
+      <!-- Suggested questions (shown before first message) -->
+      <div id="suggestedQsBar" style="display:none;width:100%;padding:0 0 var(--space-2);overflow-x:auto;white-space:nowrap;scrollbar-width:none">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="chat-input-wrap">
+        <textarea
+          id="msgInput"
+          class="chat-input"
+          placeholder="Digite uma mensagem..."
+          rows="1"
+          aria-label="Campo de mensagem"
+          maxlength="4000"
+        ></textarea>
+      </div>
+      <button id="sendBtn" class="chat-send-btn" aria-label="Enviar mensagem" disabled>
+        ➤
+      </button>
+    </footer>
+
+    <!-- Session ended state -->
+    <div id="sessionEndedState" class="hidden" style="padding:var(--space-6);text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:var(--space-3)">✅</div>
+      <h3 style="color:var(--color-primary);margin-bottom:var(--space-2)">Sessão encerrada</h3>
+      <p class="text-muted text-sm mb-4">Como foi a sessão com seu mentor?</p>
+
+      <!-- Rating -->
+      <div style="margin-bottom:var(--space-4)">
+        <p class="font-semi text-sm mb-2">Avalie a sessão:</p>
+        <div class="star-rating justify-center" id="ratingStars" role="radiogroup" aria-label="Avaliação da sessão">
+          ${[1,2,3,4,5,6,7,8,9,10].map(n => `
+            <button class="star empty" data-value="${n}" role="radio" aria-checked="false" aria-label="${n} de 10">★</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div id="aiSummaryWrap" class="card mb-4 hidden">
+        <div class="card-header"><h4>📝 Resumo da sessão</h4></div>
+        <div class="card-body">
+          <p id="aiSummary" class="text-sm" style="color:var(--color-text-soft)"></p>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button id="submitRatingBtn" class="btn btn-primary btn-block">Enviar avaliação</button>
+        <a href="mentors.html" class="btn btn-ghost btn-block">Voltar para mentores</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/ai.js"></script>
+  <script src="../js/chat.js"></script>
+</body>
+</html>
