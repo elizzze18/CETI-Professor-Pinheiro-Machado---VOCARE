@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body>
+  <div class="auth-page" style="align-items:flex-start;overflow-y:auto;padding: var(--space-4)">
+    <div class="auth-card animate-fade-in-scale" style="margin:auto">
+      <!-- Logo -->
+      <div class="auth-logo">
+        <img src="../assets/logo.png" alt="Vocare" class="auth-logo-img">
+        <p>Crie sua conta gratuita</p>
+      </div>
+
+      <!-- Step indicator -->
+      <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-6)">
+        <div id="step1Indicator" class="flex-1" style="height:4px;border-radius:999px;background:var(--color-primary);transition:background 300ms"></div>
+        <div id="step2Indicator" class="flex-1" style="height:4px;border-radius:999px;background:var(--color-border-light);transition:background 300ms"></div>
+      </div>
+
+      <!-- Step 1: Basic Info -->
+      <div id="step1">
+        <h3 style="margin-bottom:var(--space-5);font-size:var(--text-lg)">Seus dados básicos</h3>
+        <form id="step1Form" novalidate>
+          <div class="form-group">
+            <label for="name" class="form-label required">Nome completo</label>
+            <input type="text" id="name" name="name" class="form-control"
+              placeholder="Seu nome completo" autocomplete="name" required>
+          </div>
+
+          <div class="form-row flex gap-4">
+            <div class="form-group flex-1">
+              <label for="email" class="form-label required">E-mail</label>
+              <input type="email" id="email" name="email" class="form-control"
+                placeholder="seu@email.com" autocomplete="email" required>
+            </div>
+            <div class="form-group flex-1">
+              <label for="birthDate" class="form-label required">Data de nascimento</label>
+              <input type="date" id="birthDate" name="birthDate" class="form-control"
+                max="" required aria-describedby="birthDateHint">
+              <span id="birthDateHint" class="form-hint">Usada para verificar se é menor de idade.</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label required">Senha</label>
+            <div class="input-group">
+              <input type="password" id="password" name="password" class="form-control"
+                placeholder="Mínimo 8 caracteres" autocomplete="new-password" required
+                aria-describedby="pwdStrength">
+              <button type="button" id="togglePwd" class="input-icon-right" aria-label="Mostrar senha" style="background:none;border:none;cursor:pointer">👁️</button>
+            </div>
+            <div id="pwdStrength" class="mt-2" style="display:flex;gap:4px">
+              <div class="pwd-bar" style="flex:1;height:3px;border-radius:999px;background:var(--color-border-light)"></div>
+              <div class="pwd-bar" style="flex:1;height:3px;border-radius:999px;background:var(--color-border-light)"></div>
+              <div class="pwd-bar" style="flex:1;height:3px;border-radius:999px;background:var(--color-border-light)"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="passwordConfirm" class="form-label required">Confirmar senha</label>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control"
+              placeholder="Repita a senha" autocomplete="new-password" required>
+          </div>
+
+          <div id="step1Error" class="alert alert-danger hidden" role="alert" style="margin-bottom:var(--space-4)">
+            <span class="alert-icon">⚠️</span>
+            <span id="step1ErrorMsg"></span>
+          </div>
+
+          <button type="submit" id="nextBtn" class="btn btn-primary btn-block btn-lg">
+            Próximo →
+          </button>
+        </form>
+
+        <div class="divider-or">ou</div>
+        <button id="googleBtn" class="btn btn-outline btn-block" style="border-color:var(--color-border);color:var(--color-text-soft)">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234285F4' d='M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z'/%3E%3Cpath fill='%2334A853' d='M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z'/%3E%3Cpath fill='%23FBBC05' d='M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z'/%3E%3Cpath fill='%23EA4335' d='M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z'/%3E%3C/svg%3E" width="18" height="18" alt="" aria-hidden="true">
+          Cadastrar com Google
+        </button>
+        <p class="text-center text-sm mt-4" style="color:var(--color-muted)">
+          Já tem conta? <a href="login.html" style="color:var(--color-secondary);font-weight:600">Entrar</a>
+        </p>
+      </div>
+
+      <!-- Step 2: Profile Details -->
+      <div id="step2" class="hidden">
+        <button id="backBtn" class="btn btn-ghost btn-sm" style="margin-bottom:var(--space-4);padding:0;color:var(--color-muted)">
+          ← Voltar
+        </button>
+        <h3 style="margin-bottom:var(--space-5);font-size:var(--text-lg)">Sobre você</h3>
+        <form id="step2Form" novalidate>
+          <div class="form-row flex gap-4">
+            <div class="form-group flex-1">
+              <label for="school" class="form-label">Escola</label>
+              <input type="text" id="school" name="school" class="form-control"
+                placeholder="Nome da sua escola">
+            </div>
+            <div class="form-group flex-1">
+              <label for="city" class="form-label">Cidade</label>
+              <input type="text" id="city" name="city" class="form-control"
+                placeholder="Sua cidade" value="Teresina">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">WhatsApp (opcional)</label>
+            <div class="input-group">
+              <span class="input-icon-left" aria-hidden="true">📱</span>
+              <input type="tel" id="phone" name="phone" class="form-control"
+                placeholder="(86) 9 0000-0000" autocomplete="tel"
+                aria-describedby="phoneHint">
+            </div>
+            <span id="phoneHint" class="form-hint">Para receber notificações de incentivo via WhatsApp.</span>
+          </div>
+
+          <!-- Terms -->
+          <div class="form-group">
+            <label class="form-check">
+              <input type="checkbox" id="termsCheck" class="form-check-input" required>
+              <span class="form-check-label">
+                Li e aceito os <a href="#" style="color:var(--color-secondary)">Termos de Uso</a> e a
+                <a href="#" style="color:var(--color-secondary)">Política de Privacidade</a>
+              </span>
+            </label>
+          </div>
+
+          <div id="step2Error" class="alert alert-danger hidden" role="alert" style="margin-bottom:var(--space-4)">
+            <span class="alert-icon">⚠️</span>
+            <span id="step2ErrorMsg"></span>
+          </div>
+
+          <button type="submit" id="registerBtn" class="btn btn-primary btn-block btn-lg">
+            Criar conta gratuita ✨
+          </button>
+        </form>
+      </div>
+
+      <!-- Consent Modal (for minors < 18) -->
+      <div id="consentModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="consentTitle">
+        <div class="modal" style="border-radius:var(--radius-2xl)">
+          <div class="modal-header">
+            <h3 id="consentTitle">⚠️ Consentimento do Responsável</h3>
+          </div>
+          <div class="modal-body">
+            <div class="consent-card">
+              <h4>Atenção: menor de 18 anos</h4>
+              <p>De acordo com a LGPD e o ECA, precisamos do consentimento de um responsável legal para menores de 18 anos.</p>
+            </div>
+            <div class="form-group">
+              <label for="guardianName" class="form-label required">Nome do responsável</label>
+              <input type="text" id="guardianName" name="guardianName" class="form-control"
+                placeholder="Nome completo do pai/mãe/responsável">
+            </div>
+            <label class="form-check">
+              <input type="checkbox" id="guardianCheck" class="form-check-input">
+              <span class="form-check-label">
+                Como responsável legal, autorizo o cadastro deste menor de idade na plataforma Vocare e concordo com o
+                <a href="#" style="color:var(--color-secondary)">tratamento de seus dados</a> conforme a LGPD.
+              </span>
+            </label>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" id="consentDeny">Cancelar</button>
+            <button class="btn btn-primary" id="consentAccept">Confirmar e continuar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+  (async () => {
+    // Set max date for birth date (today)
+    document.getElementById('birthDate').max = new Date().toISOString().split('T')[0];
+
+    // Password visibility toggle
+    const pwdInput = document.getElementById('password');
+    const toggleBtn = document.getElementById('togglePwd');
+    toggleBtn.addEventListener('click', () => {
+      const isText = pwdInput.type === 'text';
+      pwdInput.type = isText ? 'password' : 'text';
+      toggleBtn.textContent = isText ? '👁️' : '🙈';
+    });
+
+    // Password strength indicator
+    pwdInput.addEventListener('input', () => {
+      const val = pwdInput.value;
+      const bars = document.querySelectorAll('.pwd-bar');
+      const colors = [
+        [val.length < 4 ? '#CC0000' : '#F59E0B', val.length < 4 ? '#CC0000' : '#F59E0B', 'var(--color-border-light)'],
+        ['#F59E0B', '#F59E0B', 'var(--color-border-light)'],
+        ['#2E8B57', '#2E8B57', '#2E8B57'],
+      ];
+      let strength = 0;
+      if (val.length >= 8) strength++;
+      if (/[A-Z]/.test(val) || /[0-9]/.test(val)) strength++;
+      if (/[^A-Za-z0-9]/.test(val) && val.length >= 10) strength++;
+      bars.forEach((b, i) => {
+        b.style.background = i <= strength ? (strength === 0 ? '#CC0000' : strength === 1 ? '#F59E0B' : '#2E8B57') : 'var(--color-border-light)';
+      });
+    });
+
+    // ── Step 1 ──
+    const step1Form = document.getElementById('step1Form');
+    step1Form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearFieldErrors(step1Form);
+      document.getElementById('step1Error').classList.add('hidden');
+
+      const name  = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const birth = document.getElementById('birthDate').value;
+      const pwd   = document.getElementById('password').value;
+      const conf  = document.getElementById('passwordConfirm').value;
+
+      const errors = validateForm(step1Form, {
+        name:      ['required', 'minLength:2'],
+        email:     ['required', 'email'],
+        birthDate: ['required'],
+        password:  ['required', 'password'],
+        passwordConfirm: ['required'],
+      });
+
+      if (pwd !== conf) errors.passwordConfirm = 'As senhas não coincidem.';
+
+      if (Object.keys(errors).length) {
+        for (const [field, msg] of Object.entries(errors)) showFieldError(field, msg);
+        return;
+      }
+
+      // Go to step 2
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+      document.getElementById('step1Indicator').style.background = 'var(--color-primary)';
+      document.getElementById('step2Indicator').style.background = 'var(--color-primary)';
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step1').classList.remove('hidden');
+      document.getElementById('step2Indicator').style.background = 'var(--color-border-light)';
+    });
+
+    // ── Step 2 ──
+    const step2Form = document.getElementById('step2Form');
+    applyPhoneMask(document.getElementById('phone'));
+
+    let pendingRegistration = null;
+
+    async function doRegister(guardianConsent = false, guardianName = '') {
+      const name  = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const birth = document.getElementById('birthDate').value;
+      const pwd   = document.getElementById('password').value;
+      const school = document.getElementById('school').value.trim();
+      const city   = document.getElementById('city').value.trim();
+      const phone  = document.getElementById('phone').value;
+
+      const btn = document.getElementById('registerBtn');
+      setButtonLoading(btn, true);
+
+      try {
+        await Auth.register({
+          email, password: pwd, name,
+          birthDate: birth,
+          school, city, phone,
+          guardianConsent, guardianName,
+        });
+
+        Toast.success('Conta criada! Redirecionando...');
+        setTimeout(() => navigate(CONFIG.ROUTES.ONBOARDING), 800);
+      } catch (err) {
+        const errEl = document.getElementById('step2Error');
+        document.getElementById('step2ErrorMsg').textContent = handleError(err);
+        errEl.classList.remove('hidden');
+        setButtonLoading(btn, false);
+      }
+    }
+
+    step2Form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      document.getElementById('step2Error').classList.add('hidden');
+
+      if (!document.getElementById('termsCheck').checked) {
+        const errEl = document.getElementById('step2Error');
+        document.getElementById('step2ErrorMsg').textContent = 'Você precisa aceitar os Termos de Uso para continuar.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const birth = document.getElementById('birthDate').value;
+      const age = getAge(birth);
+
+      if (age < 18) {
+        // Show consent modal
+        openModal('consentModal');
+      } else {
+        await doRegister(false);
+      }
+    });
+
+    // Consent Modal
+    document.getElementById('consentAccept').addEventListener('click', async () => {
+      const guardianName = document.getElementById('guardianName').value.trim();
+      const agreed = document.getElementById('guardianCheck').checked;
+
+      if (!guardianName) {
+        Toast.warning('Digite o nome do responsável.');
+        return;
+      }
+      if (!agreed) {
+        Toast.warning('O responsável precisa marcar a caixa de consentimento.');
+        return;
+      }
+
+      closeModal('consentModal');
+      await doRegister(true, guardianName);
+    });
+
+    document.getElementById('consentDeny').addEventListener('click', () => closeModal('consentModal'));
+
+    // Google OAuth
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+      try { await Auth.loginWithGoogle(); } catch (err) {
+        const errEl = document.getElementById('step1Error');
+        document.getElementById('step1ErrorMsg').textContent = handleError(err);
+        errEl.classList.remove('hidden');
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
