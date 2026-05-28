@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Perfil — Vocare Mentor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body class="page-with-nav page-with-bottom-nav" id="app">
+
+  <nav class="top-nav" role="navigation">
+    <a href="dashboard.html" class="nav-brand">
+      <div class="brand-logo" aria-hidden="true">🎯</div>
+      <span>Vo<em>care</em></span>
+    </a>
+    <div class="nav-actions">
+      <div class="nav-avatar" id="navAvatar">?</div>
+    </div>
+  </nav>
+
+  <main class="page-content" aria-live="polite">
+    <div class="section-header mb-4">
+      <h1 style="font-size:var(--text-xl)">👤 Meu Perfil</h1>
+    </div>
+
+    <!-- Avatar section -->
+    <div class="card mb-4">
+      <div class="card-body text-center">
+        <div id="profileAvatar" class="avatar avatar-2xl mx-auto mb-4" style="background:var(--color-primary)">?</div>
+        <button id="changeAvatarBtn" class="btn btn-ghost btn-sm text-muted">📷 Alterar foto</button>
+        <input type="file" id="avatarInput" accept="image/*" class="hidden">
+      </div>
+    </div>
+
+    <!-- Profile form -->
+    <form id="profileForm" novalidate>
+      <div class="card mb-4">
+        <div class="card-header"><h3>Informações básicas</h3></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="profileName" class="form-label required">Nome completo</label>
+            <input type="text" id="profileName" name="name" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="profilePhone" class="form-label">WhatsApp</label>
+            <input type="tel" id="profilePhone" name="phone" class="form-control" placeholder="(86) 9 0000-0000">
+          </div>
+          <div class="form-row flex gap-4">
+            <div class="form-group flex-1">
+              <label for="profileCity" class="form-label">Cidade</label>
+              <input type="text" id="profileCity" name="city" class="form-control">
+            </div>
+            <div class="form-group flex-1">
+              <label for="profileState" class="form-label">Estado</label>
+              <input type="text" id="profileState" name="state" class="form-control" value="PI">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header"><h3>Perfil profissional</h3></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label for="mentorProfession" class="form-label required">Profissão</label>
+            <input type="text" id="mentorProfession" name="profession" class="form-control" placeholder="Ex: Engenheiro de Software">
+          </div>
+          <div class="form-group">
+            <label for="mentorArea" class="form-label required">Área</label>
+            <select id="mentorArea" name="area" class="form-control">
+              <option value="">Selecione a área</option>
+              <option value="Tecnologia">Tecnologia</option>
+              <option value="Saúde">Saúde</option>
+              <option value="Educação">Educação</option>
+              <option value="Engenharia">Engenharia</option>
+              <option value="Direito">Direito</option>
+              <option value="Administração">Administração</option>
+              <option value="Comunicação">Comunicação</option>
+              <option value="Ciências">Ciências</option>
+              <option value="Agronegócio">Agronegócio</option>
+              <option value="Artes">Artes</option>
+              <option value="Segurança">Segurança</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mentorExp" class="form-label">Anos de experiência</label>
+            <input type="number" id="mentorExp" name="experience_years" class="form-control" min="0" max="50" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="mentorBio" class="form-label">Bio / Apresentação</label>
+            <textarea id="mentorBio" name="bio" class="form-control" rows="4"
+              placeholder="Conte sobre sua trajetória e como pode ajudar estudantes..." maxlength="500"></textarea>
+            <span class="form-hint">Máx. 500 caracteres — visível para estudantes.</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="formError" class="alert alert-danger hidden mb-4" role="alert">
+        <span class="alert-icon">⚠️</span>
+        <span id="formErrorMsg"></span>
+      </div>
+
+      <button type="submit" id="saveBtn" class="btn btn-primary btn-block btn-lg">
+        💾 Salvar perfil
+      </button>
+    </form>
+
+    <!-- Delete account section -->
+    <div class="card mt-6" style="border:1px solid var(--color-danger-light)">
+      <div class="card-body">
+        <h4 class="font-semi" style="color:var(--color-danger);margin-bottom:var(--space-2)">Zona de perigo</h4>
+        <p class="text-sm text-muted mb-3">Excluir sua conta remove todos os seus dados permanentemente (LGPD Art. 18).</p>
+        <button id="deleteAccountBtn" class="btn btn-danger btn-sm">🗑️ Excluir minha conta</button>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" role="navigation">
+    <a href="dashboard.html" class="bottom-nav-item" aria-label="Início">
+      <span class="bottom-nav-icon">🏠</span>
+      <span class="bottom-nav-label">Início</span>
+    </a>
+    <a href="profile.html" class="bottom-nav-item active" aria-label="Perfil" aria-current="page">
+      <span class="bottom-nav-icon">👤</span>
+      <span class="bottom-nav-label">Perfil</span>
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+  (async () => {
+    const user = await Auth.requireMentor();
+    if (!user) return;
+
+    initNavAvatar();
+
+    const [profile, mentorData] = await Promise.all([
+      DB.profiles.get(user.id),
+      DB.mentors.get(user.id).catch(() => null),
+    ]);
+
+    // Populate avatar
+    const av = document.getElementById('profileAvatar');
+    if (profile?.avatar_url) {
+      av.innerHTML = `<img src="${profile.avatar_url}" alt="${profile.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      av.textContent = initials(profile?.name || '');
+      av.style.background = avatarGradient(profile?.name || '');
+    }
+
+    // Populate basic fields
+    if (profile) {
+      document.getElementById('profileName').value  = profile.name || '';
+      document.getElementById('profilePhone').value = profile.phone || '';
+      document.getElementById('profileCity').value  = profile.city || '';
+      document.getElementById('profileState').value = profile.state || 'PI';
+    }
+
+    // Populate mentor fields
+    if (mentorData) {
+      document.getElementById('mentorProfession').value = mentorData.profession || '';
+      document.getElementById('mentorArea').value       = mentorData.area || '';
+      document.getElementById('mentorExp').value        = mentorData.experience_years || 0;
+      document.getElementById('mentorBio').value        = mentorData.bio || '';
+    }
+
+    applyPhoneMask(document.getElementById('profilePhone'));
+
+    // Avatar upload
+    document.getElementById('changeAvatarBtn').addEventListener('click', () => document.getElementById('avatarInput').click());
+    document.getElementById('avatarInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        Loader.show('Enviando foto...');
+        const url = await SupaStorage.uploadAvatar(user.id, file);
+        await DB.profiles.update(user.id, { avatar_url: url });
+        av.innerHTML = `<img src="${url}" alt="${profile?.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+        Toast.success('Foto atualizada!');
+      } catch (err) { Toast.error(handleError(err)); }
+      finally { Loader.hide(); }
+    });
+
+    // Save form
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveBtn');
+      setButtonLoading(btn, true);
+
+      try {
+        await DB.profiles.update(user.id, {
+          name:  document.getElementById('profileName').value.trim(),
+          phone: document.getElementById('profilePhone').value.replace(/\D/g, '') || null,
+          city:  document.getElementById('profileCity').value.trim() || null,
+          state: document.getElementById('profileState').value.trim() || 'PI',
+        });
+
+        const mentorUpdates = {
+          profession:       document.getElementById('mentorProfession').value.trim(),
+          area:             document.getElementById('mentorArea').value,
+          experience_years: parseInt(document.getElementById('mentorExp').value) || 0,
+          bio:              document.getElementById('mentorBio').value.trim(),
+        };
+
+        if (mentorData) {
+          await window.supabase.from('mentors').update(mentorUpdates).eq('id', user.id);
+        } else {
+          await window.supabase.from('mentors').insert({ id: user.id, ...mentorUpdates });
+        }
+
+        Toast.success('Perfil salvo com sucesso!');
+      } catch (err) {
+        document.getElementById('formErrorMsg').textContent = handleError(err);
+        show(document.getElementById('formError'));
+      }
+      setButtonLoading(btn, false);
+    });
+
+    // Delete account
+    document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+      if (!confirm('Tem certeza? Esta ação é IRREVERSÍVEL e remove todos os seus dados.')) return;
+      if (!confirm('Confirme novamente: excluir sua conta permanentemente?')) return;
+      try {
+        await Auth.deleteAccount();
+        navigate(CONFIG.ROUTES.LOGIN);
+      } catch (err) { Toast.error(handleError(err)); }
+    });
+  })();
+  </script>
+</body>
+</html>

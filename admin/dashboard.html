@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body class="page-with-nav page-with-bottom-nav" id="app">
+
+  <nav class="top-nav" role="navigation">
+    <a href="dashboard.html" class="nav-brand">
+      <div class="brand-logo">🎯</div>
+      <span>Vo<em>care</em> <span class="badge badge-danger" style="margin-left:4px;font-size:10px">ADMIN</span></span>
+    </a>
+    <div class="nav-actions">
+      <div class="nav-avatar" id="navAvatar">?</div>
+    </div>
+  </nav>
+
+  <main class="page-content" aria-live="polite">
+    <h1 style="font-size:var(--text-xl);margin-bottom:var(--space-6)">Painel Administrativo</h1>
+
+    <!-- Stats overview -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#EEF4FF">👩‍🎓</div>
+          <div><div class="stat-value" id="totalStudents">—</div><div class="stat-label">Estudantes</div></div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#D1FAE5">👨‍🏫</div>
+          <div><div class="stat-value" id="totalMentors">—</div><div class="stat-label">Mentores</div></div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#FEF3C7">💬</div>
+          <div><div class="stat-value" id="totalSessions">—</div><div class="stat-label">Sessões</div></div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#FEE2E2">⏳</div>
+          <div><div class="stat-value" id="pendingMentors">—</div><div class="stat-label">Mentores pendentes</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs mb-4" role="tablist">
+      <button class="tab-item active" data-tab="pending-mentors" role="tab">⏳ Aprovar Mentores</button>
+      <button class="tab-item" data-tab="all-mentors" role="tab">👨‍🏫 Todos Mentores</button>
+      <button class="tab-item" data-tab="professions" role="tab">🎯 Profissões</button>
+      <button class="tab-item" data-tab="students" role="tab">👩‍🎓 Estudantes</button>
+    </div>
+
+    <!-- Tab: Pending Mentors -->
+    <div id="tab-pending-mentors" role="tabpanel">
+      <div id="pendingMentorsList" style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div class="spinner mx-auto mt-4"></div>
+      </div>
+    </div>
+
+    <!-- Tab: All Mentors -->
+    <div id="tab-all-mentors" class="hidden" role="tabpanel">
+      <div id="allMentorsList" style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div class="spinner mx-auto mt-4"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Professions -->
+    <div id="tab-professions" class="hidden" role="tabpanel">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-semi">Profissões cadastradas</h3>
+        <button id="addProfessionBtn" class="btn btn-primary btn-sm">+ Adicionar</button>
+      </div>
+      <div id="professionsList" style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="spinner mx-auto mt-4"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Students -->
+    <div id="tab-students" class="hidden" role="tabpanel">
+      <div id="studentsList" style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="spinner mx-auto mt-4"></div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" role="navigation">
+    <a href="dashboard.html" class="bottom-nav-item active">
+      <span class="bottom-nav-icon">🏠</span>
+      <span class="bottom-nav-label">Admin</span>
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+  (async () => {
+    const user = await Auth.requireAdmin();
+    if (!user) return;
+    initNavAvatar();
+
+    // Tabs
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const panels = document.querySelectorAll('[role="tabpanel"]');
+        panels.forEach(p => p.classList.add('hidden'));
+        document.getElementById(`tab-${tab.dataset.tab}`).classList.remove('hidden');
+      });
+    });
+
+    // Load stats
+    const [
+      { count: studentCount },
+      { count: mentorCount },
+      { count: sessionCount },
+      { count: pendingCount },
+    ] = await Promise.all([
+      window.supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
+      window.supabase.from('mentors').select('*', { count: 'exact', head: true }).eq('is_approved', true),
+      window.supabase.from('mentoring_sessions').select('*', { count: 'exact', head: true }),
+      window.supabase.from('mentors').select('*', { count: 'exact', head: true }).eq('is_approved', false),
+    ]);
+    document.getElementById('totalStudents').textContent = studentCount || 0;
+    document.getElementById('totalMentors').textContent  = mentorCount || 0;
+    document.getElementById('totalSessions').textContent = sessionCount || 0;
+    document.getElementById('pendingMentors').textContent = pendingCount || 0;
+
+    // Load pending mentors
+    async function loadPendingMentors() {
+      const { data, error } = await window.supabase
+        .from('mentors')
+        .select('*, profile:profiles(name, email, city)')
+        .eq('is_approved', false);
+
+      const container = document.getElementById('pendingMentorsList');
+      if (!data?.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✅</div><h3>Nenhum mentor pendente</h3></div>';
+        return;
+      }
+
+      container.innerHTML = data.map(m => `
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="avatar avatar-md" style="background:${avatarGradient(m.profile?.name||'')}">
+                ${initials(m.profile?.name||'')}
+              </div>
+              <div class="flex-1">
+                <div class="font-semi">${escapeHtml(m.profile?.name||'—')}</div>
+                <div class="text-xs text-muted">${escapeHtml(m.profile?.email||'')} · ${escapeHtml(m.profile?.city||'')}</div>
+                <div class="text-sm mt-1">${escapeHtml(m.profession||'')} — ${escapeHtml(m.area||'')}</div>
+              </div>
+            </div>
+            ${m.bio ? `<p class="text-sm text-muted mb-3" style="line-height:1.6">${escapeHtml(m.bio)}</p>` : ''}
+            <div class="flex gap-2">
+              <button class="btn btn-success btn-sm flex-1" onclick="approveMentor('${m.id}')">✓ Aprovar</button>
+              <button class="btn btn-danger btn-sm flex-1" onclick="rejectMentor('${m.id}')">✕ Rejeitar</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    loadPendingMentors();
+
+    // Load professions
+    async function loadProfessions() {
+      const { data } = await window.supabase.from('professions').select('id, name, area, is_active').order('name');
+      const container = document.getElementById('professionsList');
+      container.innerHTML = (data||[]).map(p => `
+        <div class="card">
+          <div class="card-body flex items-center gap-3">
+            <span style="font-size:1.5rem">${areaIcon(p.area)}</span>
+            <div class="flex-1">
+              <div class="font-semi text-sm">${escapeHtml(p.name)}</div>
+              <div class="text-xs text-muted">${escapeHtml(p.area||'')}</div>
+            </div>
+            <span class="badge ${p.is_active ? 'badge-success' : 'badge-muted'}">${p.is_active ? 'Ativa' : 'Inativa'}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+    loadProfessions();
+
+    // Load students
+    async function loadStudents() {
+      const { data } = await window.supabase
+        .from('profiles')
+        .select('id, name, email, city, created_at, last_active')
+        .eq('role', 'student')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      const container = document.getElementById('studentsList');
+      container.innerHTML = (data||[]).map(s => `
+        <div class="card">
+          <div class="card-body flex items-center gap-3">
+            <div class="avatar avatar-sm" style="background:${avatarGradient(s.name)}">${initials(s.name)}</div>
+            <div class="flex-1">
+              <div class="font-semi text-sm">${escapeHtml(s.name)}</div>
+              <div class="text-xs text-muted">${escapeHtml(s.email||'')} · ${escapeHtml(s.city||'')}</div>
+            </div>
+            <div class="text-xs text-muted">${timeAgo(s.last_active)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.querySelector('[data-tab="professions"]').addEventListener('click', loadProfessions);
+    document.querySelector('[data-tab="students"]').addEventListener('click', loadStudents);
+    document.querySelector('[data-tab="all-mentors"]').addEventListener('click', async () => {
+      const { data } = await window.supabase.from('mentors')
+        .select('*, profile:profiles(name, email)')
+        .eq('is_approved', true)
+        .order('reputation_score', { ascending: false });
+      const c = document.getElementById('allMentorsList');
+      c.innerHTML = (data||[]).map(m => `
+        <div class="card">
+          <div class="card-body flex items-center gap-3">
+            <div class="avatar avatar-md" style="background:${avatarGradient(m.profile?.name||'')}">
+              ${initials(m.profile?.name||'')}
+            </div>
+            <div class="flex-1">
+              <div class="font-semi text-sm">${escapeHtml(m.profile?.name||'—')}</div>
+              <div class="text-xs text-muted">${escapeHtml(m.profession||'')} · ${escapeHtml(m.area||'')}</div>
+            </div>
+            <div>
+              <div class="text-xs text-muted">⭐ ${m.reputation_score||0} / ${m.total_sessions||0} sessões</div>
+              <span class="badge ${m.is_available ? 'badge-success' : 'badge-muted'}" style="font-size:10px">${m.is_available?'Disponível':'Offline'}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    });
+
+    window.approveMentor = async (id) => {
+      if (!confirm('Aprovar este mentor?')) return;
+      const { error } = await window.supabase.from('mentors').update({ is_approved: true }).eq('id', id);
+      if (error) { Toast.error(handleError(error)); return; }
+      Toast.success('Mentor aprovado!');
+      loadPendingMentors();
+      document.getElementById('pendingMentors').textContent = parseInt(document.getElementById('pendingMentors').textContent) - 1;
+    };
+
+    window.rejectMentor = async (id) => {
+      if (!confirm('Rejeitar e remover este mentor?')) return;
+      const { error } = await window.supabase.from('mentors').delete().eq('id', id);
+      if (error) { Toast.error(handleError(error)); return; }
+      Toast.info('Mentor removido.');
+      loadPendingMentors();
+    };
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Mentor — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body class="page-with-nav page-with-bottom-nav" id="app">
+
+  <nav class="top-nav" role="navigation" aria-label="Navegação principal">
+    <a href="dashboard.html" class="nav-brand">
+      <div class="brand-logo" aria-hidden="true">🎯</div>
+      <span>Vo<em>care</em></span>
+    </a>
+    <div class="nav-actions">
+      <span class="badge badge-secondary">Mentor</span>
+      <div class="dropdown">
+        <div class="nav-avatar" id="navAvatar" role="button" tabindex="0" aria-label="Menu do usuário">?</div>
+        <div id="navDropdown" class="dropdown-menu hidden" role="menu">
+          <div style="padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--color-divider)">
+            <div id="dropdownName" style="font-weight:600;font-size:var(--text-sm)"></div>
+          </div>
+          <a href="profile.html" class="dropdown-item" role="menuitem">👤 Meu perfil</a>
+          <button id="logoutBtn" class="dropdown-item danger" role="menuitem">🚪 Sair</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-content" aria-live="polite">
+    <!-- Header -->
+    <div class="dashboard-header mb-6">
+      <div class="flex items-center gap-3">
+        <div id="mentorAvatar" class="avatar avatar-lg" style="border:3px solid var(--color-accent)">?</div>
+        <div>
+          <h2 data-user-name>Carregando...</h2>
+          <p style="color:rgba(255,255,255,0.8);font-size:var(--text-sm)">
+            <span id="mentorProfession">Mentor</span>
+            <span id="availableToggle" style="margin-left:var(--space-2)"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approval warning -->
+    <div id="pendingApproval" class="alert alert-warning mb-4 hidden">
+      <span class="alert-icon">⏳</span>
+      <span>Seu perfil está <strong>aguardando aprovação</strong> pela equipe Vocare. Você receberá um e-mail quando for aprovado.</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#EEF4FF">⭐</div>
+          <div>
+            <div class="stat-value" id="reputationScore">—</div>
+            <div class="stat-label">Reputação</div>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#D1FAE5">💬</div>
+          <div>
+            <div class="stat-value" id="totalSessions">—</div>
+            <div class="stat-label">Sessões</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Availability toggle -->
+    <div class="card mb-6">
+      <div class="card-body flex items-center justify-between">
+        <div>
+          <h4 class="font-semi">Disponibilidade</h4>
+          <p class="text-sm text-muted">Controle quando aceita novas sessões</p>
+        </div>
+        <label style="cursor:pointer;display:flex;align-items:center;gap:var(--space-2)">
+          <input type="checkbox" id="availableCheck" style="width:20px;height:20px;accent-color:var(--color-success)">
+          <span id="availableLabel" class="font-semi text-sm text-muted">Offline</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Pending sessions -->
+    <div class="section-header">
+      <h2>Sessões pendentes</h2>
+      <span id="pendingCount" class="badge badge-warning">0</span>
+    </div>
+
+    <div id="pendingSessionsList" style="display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-6)">
+      <div class="card" style="padding:var(--space-4)">
+        <div class="skeleton skeleton-text" style="width:60%;margin-bottom:8px"></div>
+        <div class="skeleton skeleton-text" style="width:40%"></div>
+      </div>
+    </div>
+
+    <!-- Active sessions -->
+    <div class="section-header">
+      <h2>Sessões ativas</h2>
+      <span id="activeCount" class="badge badge-success">0</span>
+    </div>
+
+    <div id="activeSessionsList" style="display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-6)">
+      <div id="noActiveSessions" class="empty-state hidden">
+        <div class="empty-state-icon">💬</div>
+        <h3>Sem sessões ativas</h3>
+        <p>Quando aceitar sessões, elas aparecerão aqui.</p>
+      </div>
+    </div>
+
+    <!-- Recent completed -->
+    <div class="section-header">
+      <h2>Sessões recentes</h2>
+    </div>
+
+    <div id="recentSessionsList" style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div id="noRecentSessions" class="empty-state hidden">
+        <div class="empty-state-icon">📋</div>
+        <h3>Sem histórico ainda</h3>
+        <p>Suas sessões concluídas aparecerão aqui.</p>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Navegação inferior">
+    <a href="dashboard.html" class="bottom-nav-item active" aria-label="Início" aria-current="page">
+      <span class="bottom-nav-icon" aria-hidden="true">🏠</span>
+      <span class="bottom-nav-label">Início</span>
+    </a>
+    <a href="profile.html" class="bottom-nav-item" aria-label="Perfil">
+      <span class="bottom-nav-icon" aria-hidden="true">👤</span>
+      <span class="bottom-nav-label">Perfil</span>
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+  (async () => {
+    const user = await Auth.requireMentor();
+    if (!user) return;
+
+    initNavAvatar();
+    const profile = Auth.profile;
+    if (profile) {
+      document.getElementById('dropdownName').textContent = profile.name;
+      populateUserUI(profile);
+
+      const av = document.getElementById('mentorAvatar');
+      av.textContent = initials(profile.name);
+      av.style.background = avatarGradient(profile.name);
+    }
+
+    // Load mentor data
+    let mentorData;
+    try {
+      mentorData = await DB.mentors.get(user.id);
+    } catch { mentorData = null; }
+
+    if (mentorData) {
+      document.getElementById('mentorProfession').textContent = mentorData.profession || mentorData.area || 'Mentor';
+      document.getElementById('reputationScore').textContent = (mentorData.reputation_score || 0).toFixed(1);
+      document.getElementById('totalSessions').textContent   = mentorData.total_sessions || 0;
+
+      if (!mentorData.is_approved) {
+        show(document.getElementById('pendingApproval'));
+      }
+
+      // Availability toggle
+      const check = document.getElementById('availableCheck');
+      const label = document.getElementById('availableLabel');
+      check.checked = mentorData.is_available;
+      label.textContent = mentorData.is_available ? 'Disponível' : 'Offline';
+      label.style.color = mentorData.is_available ? 'var(--color-success)' : 'var(--color-muted)';
+
+      check.addEventListener('change', async () => {
+        try {
+          await window.supabase.from('mentors').update({ is_available: check.checked }).eq('id', user.id);
+          label.textContent = check.checked ? 'Disponível' : 'Offline';
+          label.style.color = check.checked ? 'var(--color-success)' : 'var(--color-muted)';
+          Toast.success(check.checked ? 'Agora você está disponível!' : 'Você está offline.');
+        } catch (err) { Toast.error(handleError(err)); check.checked = !check.checked; }
+      });
+    }
+
+    // Load sessions
+    try {
+      const sessions = await DB.sessions.listForMentor(user.id);
+      const pending   = sessions.filter(s => s.status === 'pending');
+      const active    = sessions.filter(s => s.status === 'confirmed');
+      const recent    = sessions.filter(s => ['completed','cancelled'].includes(s.status)).slice(0, 5);
+
+      document.getElementById('pendingCount').textContent = pending.length;
+      document.getElementById('activeCount').textContent  = active.length;
+
+      renderSessionsList('pendingSessionsList', pending, true);
+      renderSessionsList('activeSessionsList', active, false);
+      renderSessionsList('recentSessionsList', recent, false, true);
+
+      if (!active.length)  show(document.getElementById('noActiveSessions'));
+      if (!recent.length)  show(document.getElementById('noRecentSessions'));
+    } catch (err) { Toast.error(handleError(err)); }
+
+    function renderSessionsList(containerId, sessions, isPending, isRecent = false) {
+      const container = document.getElementById(containerId);
+      if (!sessions.length) { container.innerHTML = ''; return; }
+
+      container.innerHTML = sessions.map(s => {
+        const student = s.student || {};
+        const sName = student.name || 'Estudante';
+        return `
+          <div class="card session-card ${s.status}">
+            <div class="card-body">
+              <div class="flex items-center gap-3">
+                <div class="avatar avatar-sm" style="background:${avatarGradient(sName)};flex-shrink:0">${initials(sName)}</div>
+                <div class="flex-1">
+                  <div class="font-semi">${escapeHtml(sName)}</div>
+                  <div class="text-xs text-muted">${escapeHtml(student.school || '')} · ${timeAgo(s.created_at)}</div>
+                </div>
+                <span class="badge badge-${s.status === 'pending' ? 'warning' : s.status === 'confirmed' ? 'success' : 'muted'}" style="font-size:11px">
+                  ${s.status === 'pending' ? 'Pendente' : s.status === 'confirmed' ? 'Ativa' : s.status === 'completed' ? 'Concluída' : 'Cancelada'}
+                </span>
+              </div>
+              ${isPending ? `
+                <div class="flex gap-2 mt-3">
+                  <button class="btn btn-success btn-sm flex-1" onclick="acceptSession('${s.id}')">✓ Aceitar</button>
+                  <button class="btn btn-danger btn-sm flex-1" onclick="rejectSession('${s.id}')">✕ Recusar</button>
+                </div>
+              ` : s.status === 'confirmed' ? `
+                <a href="/student/chat.html?session_id=${s.id}" class="btn btn-primary btn-sm btn-block mt-3">💬 Abrir chat</a>
+              ` : isRecent && s.student_rating ? `
+                <div class="flex items-center gap-2 mt-2">
+                  <span class="text-xs text-muted">Avaliação:</span>
+                  <div class="star-rating">${renderStars(s.student_rating, 10)}</div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.acceptSession = async (id) => {
+      try {
+        await DB.sessions.updateStatus(id, 'confirmed');
+        Toast.success('Sessão aceita!');
+        location.reload();
+      } catch (err) { Toast.error(handleError(err)); }
+    };
+
+    window.rejectSession = async (id) => {
+      try {
+        await DB.sessions.updateStatus(id, 'cancelled');
+        Toast.info('Sessão recusada.');
+        location.reload();
+      } catch (err) { Toast.error(handleError(err)); }
+    };
+  })();
+  </script>
+</body>
+</html>

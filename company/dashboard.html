@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empresa — Vocare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/mobile.css">
+</head>
+<body class="page-with-nav page-with-bottom-nav" id="app">
+
+  <nav class="top-nav" role="navigation">
+    <a href="dashboard.html" class="nav-brand">
+      <div class="brand-logo">🎯</div>
+      <span>Vo<em>care</em></span>
+    </a>
+    <div class="nav-actions">
+      <span class="badge badge-secondary">Empresa</span>
+      <div class="nav-avatar" id="navAvatar">?</div>
+    </div>
+  </nav>
+
+  <main class="page-content" aria-live="polite">
+    <div class="section-header mb-6">
+      <h1 style="font-size:var(--text-xl)">💼 Painel da Empresa</h1>
+      <button id="newJobBtn" class="btn btn-primary btn-sm">+ Nova vaga</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#EEF4FF">💼</div>
+          <div><div class="stat-value" id="activeJobsCount">—</div><div class="stat-label">Vagas ativas</div></div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="card-body">
+          <div class="stat-icon" style="background:#D1FAE5">👀</div>
+          <div><div class="stat-value" id="totalViewsCount">—</div><div class="stat-label">Candidatos compatíveis</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job listings -->
+    <div class="section-header mb-3">
+      <h2>Suas vagas</h2>
+    </div>
+
+    <div id="jobsList" style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div class="spinner mx-auto mt-4" aria-label="Carregando vagas"></div>
+    </div>
+
+    <div id="jobsEmpty" class="empty-state hidden">
+      <div class="empty-state-icon">💼</div>
+      <h3>Nenhuma vaga publicada</h3>
+      <p>Publique vagas para encontrar candidatos compatíveis com seu perfil.</p>
+      <button onclick="document.getElementById('newJobBtn').click()" class="btn btn-primary mt-4">Publicar vaga</button>
+    </div>
+  </main>
+
+  <!-- New Job Modal -->
+  <div id="jobModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="jobModalTitle">
+    <div class="modal" style="border-radius:var(--radius-2xl)">
+      <div class="modal-header">
+        <h3 id="jobModalTitle">Nova vaga</h3>
+        <button class="modal-close" onclick="closeModal('jobModal')" aria-label="Fechar">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="jobForm" novalidate>
+          <div class="form-group">
+            <label for="jobTitle" class="form-label required">Título da vaga</label>
+            <input type="text" id="jobTitle" name="title" class="form-control" placeholder="Ex: Estágio em Desenvolvimento Web">
+          </div>
+          <div class="form-group">
+            <label for="jobType" class="form-label required">Tipo</label>
+            <select id="jobType" name="type" class="form-control">
+              <option value="">Selecionar...</option>
+              <option value="internship">Estágio</option>
+              <option value="trainee">Trainee</option>
+              <option value="job">Emprego</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jobDescription" class="form-label">Descrição</label>
+            <textarea id="jobDescription" name="description" class="form-control" rows="3"
+              placeholder="Descreva a vaga, requisitos e benefícios..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="jobLocation" class="form-label">Local</label>
+            <input type="text" id="jobLocation" name="location" class="form-control" placeholder="Cidade, Estado ou Remoto">
+          </div>
+          <div class="form-group">
+            <label for="jobMinCompat" class="form-label">Compatibilidade mínima (%)</label>
+            <input type="number" id="jobMinCompat" name="min_compatibility" class="form-control" value="60" min="0" max="100">
+            <span class="form-hint">Só aparecer para candidatos com este % ou mais de compatibilidade.</span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('jobModal')">Cancelar</button>
+        <button id="saveJobBtn" class="btn btn-primary">Publicar vaga</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" role="navigation">
+    <a href="dashboard.html" class="bottom-nav-item active">
+      <span class="bottom-nav-icon">🏠</span>
+      <span class="bottom-nav-label">Início</span>
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+  (async () => {
+    const user = await Auth.requireAuth('company');
+    if (!user) return;
+    initNavAvatar();
+
+    let _jobs = [];
+
+    async function loadJobs() {
+      const { data, error } = await window.supabase
+        .from('job_listings')
+        .select('*')
+        .eq('company_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) { Toast.error(handleError(error)); return; }
+      _jobs = data || [];
+
+      const active = _jobs.filter(j => j.is_active);
+      document.getElementById('activeJobsCount').textContent = active.length;
+      document.getElementById('totalViewsCount').textContent = active.length * 12; // mock
+
+      renderJobs();
+    }
+
+    function renderJobs() {
+      const container = document.getElementById('jobsList');
+      const empty = document.getElementById('jobsEmpty');
+
+      if (!_jobs.length) {
+        container.innerHTML = '';
+        show(empty);
+        return;
+      }
+      hide(empty);
+
+      const typeLabels = { internship: 'Estágio', trainee: 'Trainee', job: 'Emprego' };
+
+      container.innerHTML = _jobs.map(job => `
+        <div class="card">
+          <div class="card-body">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex-1">
+                <h3 class="font-semi" style="font-size:var(--text-base)">${escapeHtml(job.title)}</h3>
+                <div class="flex items-center gap-2 mt-2 flex-wrap">
+                  <span class="badge badge-secondary">${typeLabels[job.type] || job.type}</span>
+                  ${job.location ? `<span class="badge badge-muted">📍 ${escapeHtml(job.location)}</span>` : ''}
+                  <span class="badge ${job.is_active ? 'badge-success' : 'badge-muted'}">${job.is_active ? 'Ativa' : 'Inativa'}</span>
+                </div>
+                <p class="text-xs text-muted mt-2">Compat. mínima: ${job.min_compatibility}% · Criada ${timeAgo(job.created_at)}</p>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="btn btn-ghost btn-sm btn-icon" onclick="toggleJob('${job.id}', ${!job.is_active})" aria-label="${job.is_active ? 'Desativar' : 'Ativar'} vaga">
+                  ${job.is_active ? '⏸' : '▶'}
+                </button>
+                <button class="btn btn-danger btn-sm btn-icon" onclick="deleteJob('${job.id}')" aria-label="Excluir vaga">🗑</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Open new job modal
+    document.getElementById('newJobBtn').addEventListener('click', () => openModal('jobModal'));
+
+    // Save job
+    document.getElementById('saveJobBtn').addEventListener('click', async () => {
+      const title  = document.getElementById('jobTitle').value.trim();
+      const type   = document.getElementById('jobType').value;
+      if (!title || !type) { Toast.warning('Preencha o título e o tipo da vaga.'); return; }
+
+      const btn = document.getElementById('saveJobBtn');
+      setButtonLoading(btn, true);
+      try {
+        await window.supabase.from('job_listings').insert({
+          company_id:       user.id,
+          title,
+          type,
+          description:      document.getElementById('jobDescription').value.trim(),
+          location:         document.getElementById('jobLocation').value.trim(),
+          min_compatibility: parseInt(document.getElementById('jobMinCompat').value) || 60,
+          is_active:        true,
+          created_at:       new Date().toISOString(),
+        });
+        closeModal('jobModal');
+        Toast.success('Vaga publicada!');
+        document.getElementById('jobForm').reset();
+        loadJobs();
+      } catch (err) { Toast.error(handleError(err)); }
+      setButtonLoading(btn, false);
+    });
+
+    window.toggleJob = async (id, active) => {
+      await window.supabase.from('job_listings').update({ is_active: active }).eq('id', id);
+      Toast.success(active ? 'Vaga ativada!' : 'Vaga pausada.');
+      loadJobs();
+    };
+
+    window.deleteJob = async (id) => {
+      if (!confirm('Excluir esta vaga?')) return;
+      await window.supabase.from('job_listings').delete().eq('id', id);
+      Toast.info('Vaga excluída.');
+      loadJobs();
+    };
+
+    loadJobs();
+  })();
+  </script>
+</body>
+</html>
